@@ -27,6 +27,9 @@ try:
 except ImportError:
     def _to_simp(s: str) -> str: return s
 
+# Convert all output text (content + filenames) to simplified Chinese.
+simplify = _to_simp
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 QTS_DIR = os.path.join(ROOT, "全唐诗")
 YD_DIR = os.path.join(ROOT, "御定全唐詩", "json")
@@ -254,7 +257,7 @@ def main() -> None:
 
     for idx, (author, poems) in enumerate(multi, start=1):
         prefix = f"{idx:0{rank_width}d}"
-        safe_author = sanitize(author)
+        safe_author = sanitize(simplify(author))
         desc = authors_desc.get(author, "")
         intro = f"# {author}\n\n" + (desc + "\n\n" if desc else "")
         just_h1 = f"# {author}\n\n"
@@ -289,7 +292,7 @@ def main() -> None:
             content = header + "".join(blks)
             path = os.path.join(OUT_DIR, stem + ".md")
             with open(path, "w", encoding="utf-8") as fh:
-                fh.write(content)
+                fh.write(simplify(content))
             files_written += 1
             size = len(content.encode("utf-8"))
             if size > SIZE_LIMIT + 10_000:
@@ -318,7 +321,7 @@ def main() -> None:
             content = qjs_h1 + "".join(blks)
             path = os.path.join(OUT_DIR, stem + ".md")
             with open(path, "w", encoding="utf-8") as fh:
-                fh.write(content)
+                fh.write(simplify(content))
             files_written += 1
 
     print(f"全唐诗 poems used:      {total}")

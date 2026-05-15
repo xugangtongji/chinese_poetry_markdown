@@ -12,7 +12,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _common import render_paragraphs, split_by_size, write_file, reset_dir
+from _common import render_paragraphs, split_by_size, write_file, reset_dir, to_simplified
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIR = os.path.join(ROOT, "四书五经")
@@ -53,7 +53,7 @@ def main() -> None:
         single = len(parts) == 1
         for part_num, (lo, hi, blks) in enumerate(parts, start=1):
             stem = label if single else f"{label}_{lo}_{hi}"
-            write_file(os.path.join(OUT_DIR, stem + ".md"), h1 + "".join(blks))
+            write_file(os.path.join(OUT_DIR, stem + ".md"), to_simplified(h1 + "".join(blks)))
             files_written += 1
     print(f"四书五经: files={files_written}")
 

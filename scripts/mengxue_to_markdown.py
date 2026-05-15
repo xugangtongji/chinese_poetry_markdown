@@ -20,7 +20,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _common import sanitize, split_by_size, write_file, reset_dir, SIZE_LIMIT
+from _common import sanitize, split_by_size, write_file, reset_dir, SIZE_LIMIT, to_simplified
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIR = os.path.join(ROOT, "蒙学")
@@ -101,11 +101,11 @@ def main() -> None:
         if book.get("content"):
             body += render_node(book["content"], depth=2)
 
-        safe = sanitize(title)
+        safe = sanitize(to_simplified(title))
         # disambiguate if multiple source files share title (e.g. sanzijing-new vs sanzijing-traditional)
         tags = (book.get("tags") or "").strip()
         if safe in used_stems and tags:
-            safe = f"{safe}_{sanitize(tags)}"
+            safe = f"{safe}_{sanitize(to_simplified(tags))}"
         if safe in used_stems:
             safe = f"{safe}_{os.path.splitext(os.path.basename(path))[0]}"
         used_stems.add(safe)
@@ -113,7 +113,7 @@ def main() -> None:
         # body is already a single string; pack by section breaks ("\n## " boundaries)
         full = h1 + body
         if len(full.encode("utf-8")) <= SIZE_LIMIT + 10_000:
-            write_file(os.path.join(OUT_DIR, safe + ".md"), full)
+            write_file(os.path.join(OUT_DIR, safe + ".md"), to_simplified(full))
             total_files += 1
         else:
             # Split body at H2 boundaries
@@ -133,7 +133,7 @@ def main() -> None:
             for i, secs in enumerate(parts, start=1):
                 stem = safe if single else f"{safe}_{i}"
                 header = h1 if i == 1 else f"# {title}\n\n"
-                write_file(os.path.join(OUT_DIR, stem + ".md"), header + "".join(secs))
+                write_file(os.path.join(OUT_DIR, stem + ".md"), to_simplified(header + "".join(secs)))
                 total_files += 1
 
     print(f"蒙学: files={total_files}")

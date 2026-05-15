@@ -7,6 +7,23 @@ import re
 UNSAFE = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
 SIZE_LIMIT = 200_000
 
+_t2s = None
+
+
+def to_simplified(text: str) -> str:
+    """Convert traditional Chinese text to simplified via opencc.
+    Lazily initialized; returns input unchanged if opencc is unavailable."""
+    global _t2s
+    if _t2s is None:
+        try:
+            from opencc import OpenCC
+            _t2s = OpenCC("t2s")
+        except ImportError:
+            _t2s = False
+    if _t2s is False:
+        return text
+    return _t2s.convert(text)
+
 
 def sanitize(name: str, fallback: str = "_") -> str:
     out = UNSAFE.sub("_", name).strip()
