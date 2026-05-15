@@ -16,7 +16,7 @@ from _common import split_by_size, write_file, reset_dir
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "幽梦影", "youmengying.json")
-OUT_DIR = os.path.join(ROOT, "markdown", "幽梦影")
+OUT_DIR = os.path.join(ROOT, "幽梦影")
 
 CN_NUM = "零一二三四五六七八九"
 

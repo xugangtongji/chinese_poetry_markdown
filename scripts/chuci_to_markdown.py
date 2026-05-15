@@ -17,7 +17,7 @@ from _common import sanitize, render_paragraphs, split_by_size, write_file, rese
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "楚辞", "chuci.json")
-OUT_DIR = os.path.join(ROOT, "markdown", "楚辞")
+OUT_DIR = os.path.join(ROOT, "楚辞")
 
 
 def main() -> None:

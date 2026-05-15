@@ -16,7 +16,7 @@ from _common import render_paragraphs, split_by_size, write_file, reset_dir, to_
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIR = os.path.join(ROOT, "四书五经")
-OUT_DIR = os.path.join(ROOT, "markdown", "四书五经")
+OUT_DIR = os.path.join(ROOT, "四书五经")
 
 NAMES = {"daxue": "大学", "zhongyong": "中庸", "mengzi": "孟子"}
 

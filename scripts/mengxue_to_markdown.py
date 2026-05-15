@@ -24,7 +24,7 @@ from _common import sanitize, split_by_size, write_file, reset_dir, SIZE_LIMIT, 
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIR = os.path.join(ROOT, "蒙学")
-OUT_DIR = os.path.join(ROOT, "markdown", "蒙学")
+OUT_DIR = os.path.join(ROOT, "蒙学")
 
 
 def render_node(node, depth: int) -> str:

@@ -33,7 +33,7 @@ simplify = _to_simp
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 QTS_DIR = os.path.join(ROOT, "全唐诗")
 YD_DIR = os.path.join(ROOT, "御定全唐詩", "json")
-OUT_DIR = os.path.join(ROOT, "markdown", "全唐诗")
+OUT_DIR = os.path.join(ROOT, "全唐诗")
 SIZE_LIMIT = 200_000
 
 UNSAFE = re.compile(r'[<>:"/\\|?*\x00-\x1f]')

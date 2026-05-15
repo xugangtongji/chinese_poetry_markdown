@@ -20,7 +20,7 @@ from _common import sanitize, render_paragraphs, split_by_size, write_file, rese
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIR = os.path.join(ROOT, "宋词")
-OUT_DIR = os.path.join(ROOT, "markdown", "宋词")
+OUT_DIR = os.path.join(ROOT, "宋词")
 
 
 PLACEHOLDER_DESC = re.compile(r"^[\s\-—–_]*$")

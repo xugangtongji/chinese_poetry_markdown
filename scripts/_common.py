@@ -75,7 +75,13 @@ def write_file(path: str, content: str) -> int:
 
 
 def reset_dir(path: str) -> None:
-    import shutil
-    if os.path.isdir(path):
-        shutil.rmtree(path)
-    os.makedirs(path)
+    """Ensure path exists and remove only *.md files inside it.
+
+    The corpus directories at the repo root hold both source JSON and
+    generated .md files alongside each other; we must not wipe everything.
+    """
+    os.makedirs(path, exist_ok=True)
+    for f in os.listdir(path):
+        full = os.path.join(path, f)
+        if os.path.isfile(full) and f.endswith(".md"):
+            os.remove(full)

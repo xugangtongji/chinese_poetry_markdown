@@ -20,7 +20,7 @@ from _common import sanitize, render_paragraphs, split_by_size, write_file, rese
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HJJ_DIR = os.path.join(ROOT, "五代诗词", "huajianji")
 NT_DIR = os.path.join(ROOT, "五代诗词", "nantang")
-OUT_DIR = os.path.join(ROOT, "markdown", "五代诗词")
+OUT_DIR = os.path.join(ROOT, "五代诗词")
 
 
 def heading_for(rec: dict) -> str:
