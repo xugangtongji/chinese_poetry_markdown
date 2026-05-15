@@ -9,7 +9,10 @@ Poems within each author preserve original JSON source order.
 Single-poem authors are merged into 千家诗_<lo>_<hi>.md files (size-split).
 Each poem there is rendered as "## 题目（作者）".
 
-Empty title → 无题. Empty body → skip.
+If an author's poems fit in a single file, the filename drops the range
+prefix and uses just the count: <rank>_<author>_<count>.md.
+
+Empty title or empty body → skip.
 """
 from __future__ import annotations
 
@@ -49,7 +52,7 @@ def render_body(p: dict) -> str:
 
 
 def poem_title(p: dict) -> str:
-    return (p.get("title") or "").strip() or "无题"
+    return (p.get("title") or "").strip()
 
 
 def split_by_size(blocks_with_index, header_bytes_first, header_bytes_rest, limit):
@@ -76,16 +79,17 @@ def main() -> None:
         authors_desc = {r["name"]: (r.get("desc") or "").strip() for r in json.load(f)}
 
     by_author: "OrderedDict[str, list[dict]]" = OrderedDict()
-    total = empty_body = empty_title = 0
+    total = skipped_empty_body = skipped_empty_title = 0
     for stride in chunk_strides():
         with open(os.path.join(SRC_DIR, f"poet.tang.{stride}.json"), encoding="utf-8") as f:
             for poem in json.load(f):
                 paras = [s for s in (poem.get("paragraphs") or []) if s and s.strip()]
                 if not paras:
-                    empty_body += 1
+                    skipped_empty_body += 1
                     continue
                 if not (poem.get("title") or "").strip():
-                    empty_title += 1
+                    skipped_empty_title += 1
+                    continue
                 author = (poem.get("author") or "").strip() or "佚名"
                 by_author.setdefault(author, []).append(poem)
                 total += 1
@@ -129,9 +133,13 @@ def main() -> None:
             limit=SIZE_LIMIT,
         )
 
+        single_part = len(parts) == 1
         for part_num, (lo, hi, blks) in enumerate(parts, start=1):
             header = intro if part_num == 1 else just_h1
-            stem = f"{prefix}_{safe_author}_{lo}_{hi}"
+            if single_part:
+                stem = f"{prefix}_{safe_author}_{hi}"
+            else:
+                stem = f"{prefix}_{safe_author}_{lo}_{hi}"
             if stem in used:
                 stem = f"{stem}-dup{part_num}"
             used.add(stem)
@@ -160,8 +168,9 @@ def main() -> None:
             header_bytes_rest=len(qjs_h1.encode("utf-8")),
             limit=SIZE_LIMIT,
         )
+        qjs_single = len(qjs_parts) == 1
         for part_num, (lo, hi, blks) in enumerate(qjs_parts, start=1):
-            stem = f"千家诗_{lo}_{hi}"
+            stem = f"千家诗_{hi}" if qjs_single else f"千家诗_{lo}_{hi}"
             content = qjs_h1 + "".join(blks)
             path = os.path.join(OUT_DIR, stem + ".md")
             with open(path, "w", encoding="utf-8") as fh:
@@ -175,8 +184,8 @@ def main() -> None:
     print(f"  multi-poem authors: {len(multi)}")
     print(f"  single-poem authors:{len(singles)}")
     print(f"poems rendered:       {total}")
-    print(f"empty titles→无题:    {empty_title}")
-    print(f"skipped empty body:   {empty_body}")
+    print(f"skipped empty title:  {skipped_empty_title}")
+    print(f"skipped empty body:   {skipped_empty_body}")
     print(f"files written:        {files_written}")
     if oversize:
         print(f"oversize files:       {len(oversize)}")
